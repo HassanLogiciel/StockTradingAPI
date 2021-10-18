@@ -1,9 +1,10 @@
 using API.Common;
 using API.Services.Services.Model;
-using Login.ViewModels;
+using API.Services.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using RestSharp;
+using Service.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,14 +19,14 @@ namespace API.Test
         [TestMethod]
         public async Task Register()
         {
-            var responseRequest = new List<KeyValuePair<UserDto, IRestResponse>>();
+            var responseRequest = new List<KeyValuePair<UserVm, IRestResponse>>();
             for (int i = 0; i < 10000; i++)
             {
                 var client = new RestClient("https://localhost:44352/api/Register");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
                 request.AddHeader("Content-Type", "application/json");
-                var body = new UserDto()
+                var body = new UserVm()
                 {
                     Name = $"Test {i}",
                     Address = $"Test Address {i}",
@@ -40,7 +41,7 @@ namespace API.Test
                 };
                 request.AddParameter("application/json", JsonConvert.SerializeObject(body), ParameterType.RequestBody);
                 IRestResponse response = await client.ExecuteAsync(request);
-                responseRequest.Add(new KeyValuePair<UserDto, IRestResponse>(body, response));
+                responseRequest.Add(new KeyValuePair<UserVm, IRestResponse>(body, response));
             }
             string directory = Path.Combine(@"F:\Code\StockTrading\StockTradingAPI\API.Test\TestResults\Register");
             string file = $"/registerTest_{DateTime.Now.ToString("dd_mm_yyyy_hh_mm_ss_tt")}.txt";

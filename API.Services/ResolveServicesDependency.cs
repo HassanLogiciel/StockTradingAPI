@@ -14,6 +14,7 @@ namespace API.Services
             service.AddScoped<IRegisterService, RegisterService>();
             service.AddScoped<IRoleService , RoleService>();
             service.AddScoped<ILoginService , LoginService>();
+            service.AddScoped<IClaimService , ClaimService>();
         }
     }
 }

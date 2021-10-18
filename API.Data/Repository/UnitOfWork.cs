@@ -26,7 +26,7 @@ namespace API.Data.Repository
             {
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }

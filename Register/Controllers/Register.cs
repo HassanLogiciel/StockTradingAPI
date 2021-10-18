@@ -2,6 +2,7 @@
 using API.Services.Services.Dtos;
 using API.Services.Services.Interfaces;
 using API.Services.Services.Model;
+using API.Services.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,7 +23,7 @@ namespace Register.Controllers
             _registerService = registerService;
             _roleService = roleService;
         }   
-        public async Task<IActionResult> Post([FromBody]UserDto model)
+        public async Task<IActionResult> Post([FromBody] UserVm model)
         {
             var response = new Response();
             if (ModelState.IsValid)

@@ -3,13 +3,14 @@ using API.Data.Model;
 using API.Services.Services.Dtos;
 using API.Services.Services.Interfaces;
 using IdentityModel.Client;
-using Login.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Service.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,47 +56,72 @@ namespace API.Services.Services
                                 configurationBuilder.AddJsonFile(path, false);
                                 IConfigurationRoot root = configurationBuilder.Build();
                                 IConfigurationSection configurationServerUrl = root.GetSection("IdentityServerUrl");
-                                IConfigurationSection configurationClientId = root.GetSection("ClientId");
-                                IConfigurationSection configurationSecret = root.GetSection("ClientSecret");
+                                 IConfigurationSection configurationNormalUserScopes = root.GetSection("NormalUserScopes");
+                                 IConfigurationSection configurationAdminScopes = root.GetSection("AdminScopes");
 
                                 var identityServerUrl = configurationServerUrl.Value;
-                                var clientId = configurationClientId.Value;
-                                var clientSecret = configurationSecret.Value;
+                                var clientId = model.ClientId;
+                                var clientSecret = model.ClientSecret;
+                                var adminScopes = configurationAdminScopes.Value;
+                                var normalUserScopes = configurationNormalUserScopes.Value;
                                 using (var cleint = new HttpClient())
                                 {
                                     var discoveryDocument = await cleint.GetDiscoveryDocumentAsync(identityServerUrl);
                                     if (discoveryDocument.IsError)
                                     {
-                                        response.Errors.Add(discoveryDocument.Json.ToString());
-                                    }
-                                    else
-                                    {
-                                        var tokenResponse = await cleint.RequestPasswordTokenAsync(new PasswordTokenRequest()
+                                        if (!string.IsNullOrEmpty(discoveryDocument.Error))
                                         {
-                                            ClientId = clientId,
-                                            ClientSecret = clientSecret,
-                                            Password = model.Password,
-                                            UserName = model.Username,
-                                            RequestUri = new Uri(discoveryDocument.TokenEndpoint),
-                                            Scope = "tradingAppLoginAPI",
-                                        });
-                                        if (tokenResponse.IsError)
-                                        {
-                                            response.Errors.Add(tokenResponse.Error);
+                                            response.Errors.Add(discoveryDocument.Json.ToString());
                                         }
                                         else
                                         {
-                                            var token = tokenResponse.AccessToken;
-                                            if (!string.IsNullOrEmpty(token))
+                                            response.Errors.Add("Internal Server Error!");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var role = await _userManger.GetRolesAsync(applicationUser);
+                                        if (role.Any())
+                                        {
+                                            var passwordTokenRequest = new PasswordTokenRequest()
                                             {
-                                                var loginDto = new LoginDto()
-                                                {
-                                                    AccessToken = token,
-                                                    Expiration = tokenResponse.ExpiresIn,
-                                                    UserId = applicationUser.Id
-                                                };
-                                                response.AdditionalData = JsonConvert.SerializeObject(loginDto);
+                                                ClientId = clientId,
+                                                ClientSecret = clientSecret,
+                                                Password = model.Password,
+                                                UserName = model.Username,
+                                                RequestUri = new Uri(discoveryDocument.TokenEndpoint),
+                                            };
+                                            if (role.Contains("Admin"))
+                                            {
+                                                passwordTokenRequest.Scope = adminScopes;//"UserApi";
                                             }
+                                            else if (role.Contains("NormalUser"))
+                                            {
+                                                passwordTokenRequest.Scope = normalUserScopes; //"tradingAppLoginAPI";
+                                            }
+                                            var tokenResponse = await cleint.RequestPasswordTokenAsync(passwordTokenRequest);
+                                            if (tokenResponse.IsError)
+                                            {
+                                                response.Errors.Add(tokenResponse.Error);
+                                            }
+                                            else
+                                            {
+                                                var token = tokenResponse.AccessToken;
+                                                if (!string.IsNullOrEmpty(token))
+                                                {
+                                                    var loginDto = new LoginDto()
+                                                    {
+                                                        AccessToken = token,
+                                                        Expiration = tokenResponse.ExpiresIn,
+                                                        UserId = applicationUser.Id
+                                                    };
+                                                    response.AdditionalData = JsonConvert.SerializeObject(loginDto);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            response.Errors.Add("User does not have any roles!");
                                         }
                                     }
                                 }

@@ -1,5 +1,4 @@
 ﻿using API.Common;
-using API.Services.Services;
 using API.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,39 +8,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Login.Controllers
+namespace Register.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class ClaimController : ControllerBase
     {
-        private readonly ILoginService _loginService;
+        private readonly IClaimService _claimService;
 
-        public LoginController(ILoginService loginService)
+        public ClaimController(IClaimService claimService)
         {
-            _loginService = loginService;
+            _claimService = claimService;
         }
-        public async Task<IActionResult> Post([FromBody]LoginVm model)
+
+        public async Task<IActionResult> Post(ClaimVm model)
         {
             var response = new Response();
             if (ModelState.IsValid)
             {
-                response =await _loginService.LoginUser(model);
+                response = await _claimService.AddClaim(model);
+                if (response.Errors.Count == 0)
+                {
+                    return Ok(response);
+                }
             }
             else
             {
                 var modelErrors = string.Join(',', ModelState.Select(x => x.Value.Errors).Where(y => y.Count > 0).ToList());
                 response.Errors.Add(modelErrors);
             }
-            if (response.IsSuccess)
-            {
-                return Ok(response);
-
-            }
-            else
-            {
-                return BadRequest(response);
-            }
+            return BadRequest(response);
         }
     }
 }

@@ -3,9 +3,11 @@ using API.Data.Data;
 using API.Data.Model;
 using API.Services.Services.Interfaces;
 using API.Services.Services.Model;
+using API.Services.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,7 +24,7 @@ namespace API.Services.Services
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        public async Task<Response> RegisterUser(UserDto userDto)
+        public async Task<Response> RegisterUser(UserVm userDto)
         {
             var response = new Response();
             try
@@ -40,7 +42,6 @@ namespace API.Services.Services
                         Country = userDto.Country,
                         NormalizedUserName = userDto.Name
                     };
-
                     var result = await _userManager.CreateAsync(user, userDto.Password);
                     if (!result.Succeeded)
                     {
@@ -54,7 +55,13 @@ namespace API.Services.Services
                         var addUserToRole = await _userManager.AddToRoleAsync(user, "NormalUser");
                         if (!addUserToRole.Succeeded)
                         {
-                            response.Errors.Add(string.Join(',',result.Errors));
+                            response.Errors.Add(string.Join(',', result.Errors));
+                        }
+
+                        var addClaim = await _userManager.AddClaimAsync(user, new Claim("RoleType","NormalUser"));
+                        if (!addClaim.Succeeded)
+                        {
+                            response.Errors.Add(string.Join(',', result.Errors));
                         }
                     }
                 }

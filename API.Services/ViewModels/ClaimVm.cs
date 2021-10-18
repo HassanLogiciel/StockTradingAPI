@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Service.ViewModels
 {
-    public class LoginVm
+    public class ClaimVm
     {
         [Required]
-        public string Username { get; set; }
+        public string UserId { get; set; }
+
         [Required]
-        public string Password { get; set; }
+        public string Type { get; set; }
+       
         [Required]
-        public string ClientId { get; set; }
-        [Required]
-        public string ClientSecret { get; set; }
+        public string Value { get; set; }
     }
 }

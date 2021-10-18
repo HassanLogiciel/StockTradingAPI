@@ -1,6 +1,6 @@
 ﻿using API.Common;
-using API.Services.Services.Model;
-using API.Services.ViewModels;
+using API.Services.Services.Dtos;
+using Service.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace API.Services.Services.Interfaces
 {
-    public interface IRegisterService
+    public interface IClaimService
     {
-        public Task<Response> RegisterUser(UserVm userDto);
+        public Task<Response> AddClaim(ClaimVm model);
     }
 }
