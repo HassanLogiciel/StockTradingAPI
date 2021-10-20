@@ -40,7 +40,7 @@ namespace Admin.Controllers
             return BadRequest(response);
         }
 
-        [HttpGet]
+        [HttpPut]
         [Route("approve/{id}")]
         public async Task<IActionResult> Approve(string id)
         {

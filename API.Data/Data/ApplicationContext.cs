@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using API.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,10 @@ namespace API.Data.Data
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {}
+        public DbSet<StatusDb> Status { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new StatusConfiguration());
+        }
     }
 }

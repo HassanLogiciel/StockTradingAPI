@@ -12,8 +12,8 @@ namespace API.Services.Services.Model
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public IKey Id { get; set; }
-        public DateTime Created { get; set; }
+        public int Id { get; set; }
+        public DateTime Created { get; set; } = DateTime.Now;
         public string CreatedBy { get; set; }
         public DateTime? Modified { get; set; }
         public string ModifiedBy { get; set; }
