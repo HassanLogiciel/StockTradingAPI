@@ -27,5 +27,29 @@ namespace Admin.Controllers
             }
             return BadRequest(response);
         }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            var response = await _userService.GetUserAsync(id);
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpGet]
+        [Route("approve/{id}")]
+        public async Task<IActionResult> Approve(string id)
+        {
+            var response = await _userService.ApproveUserAsync(id);
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
     }
 }

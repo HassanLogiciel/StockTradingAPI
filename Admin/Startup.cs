@@ -16,6 +16,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +46,7 @@ namespace Admin
             services.AddDbContext<ApplicationContext>(op => op.UseSqlServer(applicationConnectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
             //services.AddIdentity<ApplicationUser, IdentityRole>(op => 
             //{
-                
+
             //}).AddEntityFrameworkStores<IdentityContext>();
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", op =>
@@ -70,6 +72,14 @@ namespace Admin
             services.AddControllers();
             services.AddScoped<IUserService, UserService>();
             services.AddAllRepository();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo() 
+                {
+                    Title = "Admin API",
+                    Version = "V1"
+                });
+            });
             //services.RegisterAllServices();
             //services.ConfigureApplicationCookie(options =>
             //{
@@ -92,7 +102,12 @@ namespace Admin
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseSwagger();
 
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "AdminAPI");
+            });
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -102,7 +117,6 @@ namespace Admin
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapControllers().RequireAuthorization("ApiScope");
                 //endpoints.MapControllerRoute(name: "userController", pattern: "{controller=User}").RequireAuthorization("UserApi");
 
             });
