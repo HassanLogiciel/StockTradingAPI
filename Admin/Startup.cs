@@ -17,7 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.Swagger;
+using Swashbuckle.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,10 +60,10 @@ namespace Admin
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("scope", "UserApi");
                 });
-                //option.AddPolicy("Admin", policy =>
-                //{
-                //    policy.RequireClaim("RoleType", "Admin");
-                //});
+                option.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireClaim("RoleType", "Admin");
+                });
             });
             services.AddControllers();
             services.AddScoped<IUserService, UserService>();
@@ -99,6 +99,7 @@ namespace Admin
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapControllers().RequireAuthorization("UserApi");
                 //endpoints.MapControllerRoute(name: "userController", pattern: "{controller=User}").RequireAuthorization("UserApi");
 
             });

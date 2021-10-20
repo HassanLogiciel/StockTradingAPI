@@ -7,10 +7,10 @@ using System.Text;
 
 namespace API.Data.Entities
 {
-    public class StatusDb  : EntityBase 
+    public class StatusDb : EntityBase
     {
-     
         public Status Status { get; set; }
+        public string Name { get; set; }
     }
 
     public enum Status

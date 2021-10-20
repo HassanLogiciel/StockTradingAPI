@@ -11,7 +11,13 @@ namespace API.Data.Data
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {}
-        public DbSet<StatusDb> Status { get; set; }
+        public DbSet<StatusDb> Statuses { get; set; }
+        public DbSet<AppSetting> AppSettings { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<WalletEvent>  WalletEvents { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new StatusConfiguration());

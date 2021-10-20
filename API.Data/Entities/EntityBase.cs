@@ -12,7 +12,7 @@ namespace API.Services.Services.Model
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime Created { get; set; } = DateTime.Now;
         public string CreatedBy { get; set; }
         public DateTime? Modified { get; set; }

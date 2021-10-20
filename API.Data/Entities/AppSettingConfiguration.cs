@@ -6,11 +6,11 @@ using System.Text;
 
 namespace API.Data.Entities
 {
-    class StatusConfiguration : IEntityTypeConfiguration<StatusDb>
+    class AppSettingConfiguration : IEntityTypeConfiguration<AppSetting>
     {
-        public void Configure(EntityTypeBuilder<StatusDb> builder)
+        public void Configure(EntityTypeBuilder<AppSetting> builder)
         {
-            builder.ToTable("Statuses");
+            builder.ToTable("AppSetting");
         }
     }
 }
