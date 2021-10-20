@@ -1,3 +1,4 @@
+using API.Data;
 using API.Data.Data;
 using API.Data.Model;
 using API.Services;
@@ -33,11 +34,14 @@ namespace Login
         {
             var config = new ConfigurationBuilder().SetBasePath(System.IO.Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", false).Build();
             var connectionString = config.GetConnectionString("IdentityConnectionString");
+            var applicationConnectionString = config.GetConnectionString("ApplcationConnectionString");
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddDbContext<IdentityContext>(op => op.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
+            services.AddDbContext<ApplicationContext>(op => op.UseSqlServer(applicationConnectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
             services.AddControllers();
             services.RegisterAllServices();
+            services.AddAllRepository();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,21 +1,31 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using API.Services.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Admin.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy:"Admin")]
+    [Authorize]
     public class UserController : ControllerBase
     {
-        public IActionResult Get()
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
         {
-            return Ok();
+            _userService = userService;
         }
 
-        public IActionResult AsPost()
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
-            return Ok();
+            var response = await _userService.ListUserAsync();
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
         }
     }
 }

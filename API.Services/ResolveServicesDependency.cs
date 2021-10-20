@@ -12,9 +12,10 @@ namespace API.Services
         public static void RegisterAllServices(this IServiceCollection service)
         {
             service.AddScoped<IRegisterService, RegisterService>();
-            service.AddScoped<IRoleService , RoleService>();
-            service.AddScoped<ILoginService , LoginService>();
-            service.AddScoped<IClaimService , ClaimService>();
+            service.AddScoped<IRoleService, RoleService>();
+            service.AddScoped<ILoginService, LoginService>();
+            service.AddScoped<IClaimService, ClaimService>();
+            service.AddScoped<IUserService, UserService>();
         }
     }
 }

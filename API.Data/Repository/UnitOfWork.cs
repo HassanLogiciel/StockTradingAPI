@@ -12,9 +12,11 @@ namespace API.Data.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationContext _context;
-        public UnitOfWork(ApplicationContext context)
+        private readonly IdentityContext _identityContext;
+        public UnitOfWork(ApplicationContext context, IdentityContext identityContext )
         {
             _context = context;
+            _identityContext = identityContext;
         }
         public void Dispose()
         {
@@ -24,6 +26,7 @@ namespace API.Data.Repository
         {
             try
             {
+                await _identityContext.SaveChangesAsync();
                 await _context.SaveChangesAsync();
             }
             catch (Exception)

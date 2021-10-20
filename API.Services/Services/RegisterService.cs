@@ -15,14 +15,10 @@ namespace API.Services.Services
 {
     public class RegisterService : IRegisterService
     {
-        private readonly IdentityContext _identityContext;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        public RegisterService(IdentityContext identityContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public RegisterService(UserManager<ApplicationUser> userManager)
         {
-            _identityContext = identityContext;
             _userManager = userManager;
-            _roleManager = roleManager;
         }
         public async Task<Response> RegisterUser(UserVm userDto)
         {
@@ -58,7 +54,7 @@ namespace API.Services.Services
                             response.Errors.Add(string.Join(',', result.Errors));
                         }
 
-                        var addClaim = await _userManager.AddClaimAsync(user, new Claim("RoleType","NormalUser"));
+                        var addClaim = await _userManager.AddClaimAsync(user, new Claim("RoleType", "NormalUser"));
                         if (!addClaim.Succeeded)
                         {
                             response.Errors.Add(string.Join(',', result.Errors));

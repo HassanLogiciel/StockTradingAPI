@@ -1,4 +1,6 @@
 ﻿using API.Common;
+using API.Data.Data;
+using API.Data.Interfaces;
 using API.Data.Model;
 using API.Services.Services.Interfaces;
 using API.Services.Services.Model;
@@ -14,11 +16,13 @@ namespace API.Services.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserRepository _userRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(UserManager<ApplicationUser> userManager)
+        public UserService(IUserRepository userRepo, IUnitOfWork unitOfWork)
         {
-            _userManager = userManager;
+            _userRepo = userRepo;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Response> ApproveUserAsync(string userId)
@@ -26,25 +30,11 @@ namespace API.Services.Services
             var response = new Response();
             if (userId != null)
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userRepo.GetById(userId);
                 if (user != null)
                 {
                     user.IsActive = true;
-                    var result = await _userManager.UpdateAsync(user);
-                    if (!result.Succeeded)
-                    {
-                        if (result.Errors.Any())
-                        {
-                            foreach (var item in result.Errors)
-                            {
-                                response.Errors.Add(item.ToString());
-                            }
-                        }
-                        else
-                        {
-                            response.Errors.Add("Internal Server Error!");
-                        }
-                    }
+                    await _unitOfWork.SaveChanges();
                 }
                 else
                 {
@@ -63,7 +53,7 @@ namespace API.Services.Services
             var response = new ResponseObject<UserDto>();
             if (userId != null)
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userRepo.GetById(userId);
                 if (user != null)
                 {
                     var userDto = new UserDto()
@@ -96,10 +86,10 @@ namespace API.Services.Services
         {
             var response = new ResponseObject<List<UserDto>>();
 
-            var users = _userManager.Users;
+            var users = await _userRepo.GetAll();
             if (users.Any())
             {
-                var listUsers = await users.Select(c => new UserDto() 
+                var listUsers = users.Select(c => new UserDto()
                 {
                     Address = c.Address,
                     City = c.City,
@@ -110,7 +100,7 @@ namespace API.Services.Services
                     Phone = c.PhoneNumber,
                     State = c.State,
                     Username = c.UserName
-                }).ToListAsync();
+                }).ToList();
                 response.RequestedObject = listUsers;
             }
             else
