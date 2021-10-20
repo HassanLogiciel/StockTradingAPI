@@ -11,7 +11,7 @@ namespace API.Data
 {
     public static class RegisterRepository
     {
-        public static void AddAllRepository(this IServiceCollection services)
+        public static void ResolveRepositoryDependencies(this IServiceCollection services)
         {
             services.AddScoped<IEnityBase, EntityBase>();
             services.AddScoped<IUserRepository, UserRepository>();

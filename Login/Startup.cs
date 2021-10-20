@@ -40,8 +40,7 @@ namespace Login
             services.AddDbContext<ApplicationContext>(op => op.UseSqlServer(applicationConnectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
             services.AddControllers();
-            services.RegisterAllServices();
-            services.AddAllRepository();
+            services.ResolveLoginDependencies();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

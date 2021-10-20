@@ -44,10 +44,6 @@ namespace Admin
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddDbContext<IdentityContext>(op => op.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
             services.AddDbContext<ApplicationContext>(op => op.UseSqlServer(applicationConnectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
-            //services.AddIdentity<ApplicationUser, IdentityRole>(op => 
-            //{
-
-            //}).AddEntityFrameworkStores<IdentityContext>();
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", op =>
                 {
@@ -71,7 +67,6 @@ namespace Admin
             });
             services.AddControllers();
             services.AddScoped<IUserService, UserService>();
-            services.AddAllRepository();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo() 
@@ -80,22 +75,9 @@ namespace Admin
                     Version = "V1"
                 });
             });
-            //services.RegisterAllServices();
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    options.Cookie.Name = "auth_cookie";
-            //    options.Cookie.SameSite = SameSiteMode.None;
-            //    options.LoginPath = new PathString("/api/contests");
-            //    options.AccessDeniedPath = new PathString("/api/contests");
-            //     options.Events.OnRedirectToLogin = context =>
-            //    {
-            //        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            //        return Task.CompletedTask;
-            //    };
-            //});
+            services.ResolveAdminDependencies();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

@@ -1,4 +1,5 @@
-﻿using API.Services.Services;
+﻿using API.Data;
+using API.Services.Services;
 using API.Services.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -9,13 +10,28 @@ namespace API.Services
 {
     public static class ResolveServicesDependency
     {
-        public static void RegisterAllServices(this IServiceCollection service)
+        public static void ResolveRegisterDependencies(this IServiceCollection services)
         {
-            service.AddScoped<IRegisterService, RegisterService>();
-            service.AddScoped<IRoleService, RoleService>();
-            service.AddScoped<ILoginService, LoginService>();
-            service.AddScoped<IClaimService, ClaimService>();
-            service.AddScoped<IUserService, UserService>();
+            services.ResolveRepositoryDependencies();
+            services.AddScoped<IRegisterService, RegisterService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IClaimService, ClaimService>();
+        }
+
+        public static void ResolveLoginDependencies(this IServiceCollection services)
+        {
+            services.ResolveRepositoryDependencies();
+            services.AddScoped<IRegisterService, RegisterService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IClaimService, ClaimService>();
+        }
+
+        public static void ResolveAdminDependencies(this IServiceCollection services)
+        {
+            services.ResolveRepositoryDependencies();
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }

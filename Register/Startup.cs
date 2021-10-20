@@ -32,11 +32,13 @@ namespace Register
         {
             var config = new ConfigurationBuilder().SetBasePath(System.IO.Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", false).Build();
             var connectionString = config.GetConnectionString("IdentityConnectionString");
+            var applicationConnectionString = config.GetConnectionString("ApplcationConnectionString");
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            services.AddDbContext<ApplicationContext>(op => op.UseSqlServer(applicationConnectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
             services.AddDbContext<IdentityContext>(op => op.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
             services.AddControllers();
-            services.RegisterAllServices();
+            services.ResolveRegisterDependencies();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

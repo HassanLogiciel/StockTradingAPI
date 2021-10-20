@@ -58,6 +58,7 @@ namespace API.Services.Services
                 {
                     var userDto = new UserDto()
                     {
+                        Id = user.Id,
                         Address = user.Address,
                         City = user.City,
                         Country = user.Country,
@@ -91,6 +92,7 @@ namespace API.Services.Services
             {
                 var listUsers = users.Select(c => new UserDto()
                 {
+                    Id = c.Id,
                     Address = c.Address,
                     City = c.City,
                     Country = c.Country,
