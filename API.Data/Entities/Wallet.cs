@@ -10,6 +10,6 @@ namespace API.Data.Entities
     {
         public double Amount { get; set; }
         public string UserId { get; set; }
-        public ICollection<WalletEvent> WalletEvents { get; set; }
+        public virtual ICollection<WalletEvent> WalletEvents { get; set; } = new List<WalletEvent>();
     }
 }

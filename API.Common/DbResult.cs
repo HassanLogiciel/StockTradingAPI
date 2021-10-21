@@ -6,7 +6,7 @@ namespace API.Common
 {
     public class DbResult
     {
-        public HashSet<string> Errors { get; set; }
+        public HashSet<string> Errors { get; set; } = new HashSet<string>();
         public bool IsSuccess
         {
             get

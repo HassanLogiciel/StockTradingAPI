@@ -22,12 +22,12 @@ namespace API.Data.Repository
             await _applicationContext.Transactions.AddAsync(model);
         }
 
-        public async Task<List<Transaction>> GetAll()
+        public async Task<List<Transaction>> GetAllAsync()
         {
             return await _applicationContext.Transactions.ToListAsync();
         }
 
-        public async Task<Transaction> GetById(string Id)
+        public async Task<Transaction> GetByIdAsync(string Id)
         {
             return await _applicationContext.FindAsync<Transaction>(Id);
         }

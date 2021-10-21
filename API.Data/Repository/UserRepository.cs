@@ -19,12 +19,12 @@ namespace API.Data.Repository
             _identityContext = identityContext;
         }
 
-        public async Task<List<ApplicationUser>> GetAll()
+        public async Task<List<ApplicationUser>> GetAllAsync()
         {
             return await _identityContext.Users.ToListAsync();
         }
 
-        public async Task<ApplicationUser> GetById(string id)
+        public async Task<ApplicationUser> GetByIdAsync(string id)
         {
             return await _identityContext.Users.Where(c=>c.Id == id).FirstOrDefaultAsync();
         }

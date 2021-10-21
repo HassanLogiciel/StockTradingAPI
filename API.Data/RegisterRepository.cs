@@ -15,6 +15,8 @@ namespace API.Data
         {
             services.AddScoped<IEnityBase, EntityBase>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IWalletRepository, WalletRepository>();
+            services.AddScoped<ITransactionRepo, TransactionRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

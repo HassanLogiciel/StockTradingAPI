@@ -7,7 +7,7 @@ namespace Admin.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(policy: "Admin")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -40,7 +40,7 @@ namespace Admin.Controllers
             return BadRequest(response);
         }
 
-        [HttpPut]
+        [HttpGet]
         [Route("approve/{id}")]
         public async Task<IActionResult> Approve(string id)
         {
