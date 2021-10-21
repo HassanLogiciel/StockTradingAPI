@@ -10,6 +10,7 @@ namespace StockTrading.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(policy: "NormalUser")]
+    [Authorize(policy: "TransactionApi")]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;

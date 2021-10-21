@@ -47,13 +47,19 @@ namespace StockTrading
                 });
             services.AddAuthorization(option =>
             {
-                option.AddPolicy("ApiScope", policy =>
+                option.AddPolicy("TransactionApi", policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("scope", "TransactionApi");
                 });
+                option.AddPolicy("NUserApi", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "NUserApi");
+                });
                 option.AddPolicy("NormalUser", policy =>
                 {
+                    policy.RequireAuthenticatedUser();
                     policy.RequireClaim("RoleType", "NormalUser");
                 });
             });
