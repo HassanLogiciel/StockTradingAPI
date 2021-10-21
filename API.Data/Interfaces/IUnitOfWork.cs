@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace API.Data.Model
+namespace API.Data.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {

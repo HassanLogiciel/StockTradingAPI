@@ -9,8 +9,6 @@ namespace API.Data.Interfaces
     {
         Task<List<T>> GetAll();
 
-        Task<T> GetById(string Id);
-
-       
+        Task<T> GetById(string id);
     }
 }

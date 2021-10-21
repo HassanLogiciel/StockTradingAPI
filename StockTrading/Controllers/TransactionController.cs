@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using API.Common;
+using API.Services.Services.Interfaces;
+using API.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace StockTrading.Controllers
@@ -11,9 +10,25 @@ namespace StockTrading.Controllers
     [ApiController]
     public class TransactionController : ControllerBase
     {
-        public async Task<IActionResult> Deposit()
+        private readonly ITransactionService _transactionService;
+
+        public TransactionController(ITransactionService transactionService)
         {
-            return Ok();
+            _transactionService = transactionService;
+        }
+
+        public async Task<IActionResult> Deposit([FromBody] DepositVm model)
+        {
+            var response = new Response();
+            if (ModelState.IsValid)
+            {
+                response = await _transactionService.DepositAsync(model);
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
+            }
+            return BadRequest(response);
         }
 
         public async Task<IActionResult> Withdraw()
