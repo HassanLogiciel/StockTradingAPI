@@ -25,12 +25,12 @@ namespace API.Data.Repository
             await _applicationContext.Wallets.AddAsync(model);
         }
 
-        public async Task<List<Wallet>> GetAll()
+        public async Task<List<Wallet>> GetAllAsync()
         {
             return await _applicationContext.Wallets.ToListAsync();
         }
 
-        public async Task<Wallet> GetById(string id)
+        public async Task<Wallet> GetByIdAsync(string id)
         {
             return await _applicationContext.Wallets.FindAsync(id);
         }

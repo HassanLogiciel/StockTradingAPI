@@ -1,5 +1,6 @@
 ﻿using API.Common;
 using API.Data.Data;
+using API.Data.Entities;
 using API.Data.Interfaces;
 using API.Data.Model;
 using API.Services.Services.Interfaces;
@@ -18,11 +19,14 @@ namespace API.Services.Services
     {
         private readonly IUserRepository _userRepo;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWalletRepository _walletRepo;
 
-        public UserService(IUserRepository userRepo, IUnitOfWork unitOfWork)
+
+        public UserService(IUserRepository userRepo, IUnitOfWork unitOfWork, IWalletRepository walletRepo)
         {
             _userRepo = userRepo;
             _unitOfWork = unitOfWork;
+            _walletRepo = walletRepo;
         }
 
         public async Task<Response> ApproveUserAsync(string userId)
@@ -30,11 +34,37 @@ namespace API.Services.Services
             var response = new Response();
             if (userId != null)
             {
-                var user = await _userRepo.GetById(userId);
+                var user = await _userRepo.GetByIdAsync(userId);
                 if (user != null)
                 {
+                    var wallet = new Wallet()
+                    {
+                        Amount = 0,
+                        Created = DateTime.Now,
+                        CreatedBy = "Backend",
+                        IsActive = true,
+                        UserId = user.Id,
+                    };
+                    var walletEvent = new WalletEvent()
+                    {
+                        Created = DateTime.Now,
+                        CreatedBy = "Backend",
+                        EventType = WalletEvent.WalletCreate,
+                        IsActive = true,
+                        Description = $"New Wallet Has been created by admin for user {user.NormalizedUserName} on {DateTime.Now.ToString("d")}",
+                        UserId = user.Id,
+                    };
+                    wallet.WalletEvents.Add(walletEvent);
                     user.IsActive = true;
-                    await _unitOfWork.SaveChanges();
+                    await _walletRepo.Create(wallet);
+                    var result = await _unitOfWork.SaveChanges();
+                    if (!result.IsSuccess)
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            response.Errors.Add(error);
+                        }
+                    }
                 }
                 else
                 {
@@ -53,7 +83,7 @@ namespace API.Services.Services
             var response = new ResponseObject<UserDto>();
             if (userId != null)
             {
-                var user = await _userRepo.GetById(userId);
+                var user = await _userRepo.GetByIdAsync(userId);
                 if (user != null)
                 {
                     var userDto = new UserDto()
@@ -87,7 +117,7 @@ namespace API.Services.Services
         {
             var response = new ResponseObject<List<UserDto>>();
 
-            var users = await _userRepo.GetAll();
+            var users = await _userRepo.GetAllAsync();
             if (users.Any())
             {
                 var listUsers = users.Select(c => new UserDto()

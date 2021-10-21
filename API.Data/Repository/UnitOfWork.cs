@@ -1,4 +1,5 @@
-﻿using API.Data.Data;
+﻿using API.Common;
+using API.Data.Data;
 using API.Data.Interfaces;
 using API.Data.Model;
 using Microsoft.EntityFrameworkCore;
@@ -23,17 +24,19 @@ namespace API.Data.Repository
         {
             _context.Dispose();
         }
-        public async Task SaveChanges()
+        public async Task<DbResult> SaveChanges()
         {
+            var result = new DbResult();
             try
             {
                 await _identityContext.SaveChangesAsync();
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                result.Errors.Add(ex.Message);
             }
+            return result;
         }
     }
 }

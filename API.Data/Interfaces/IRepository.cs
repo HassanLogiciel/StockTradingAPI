@@ -7,8 +7,8 @@ namespace API.Data.Interfaces
 {
     public interface IRepository<T> where T : class
     {
-        Task<List<T>> GetAll();
+        Task<List<T>> GetAllAsync();
 
-        Task<T> GetById(string id);
+        Task<T> GetByIdAsync(string id);
     }
 }

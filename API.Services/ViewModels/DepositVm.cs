@@ -10,7 +10,7 @@ namespace API.Services.ViewModels
         [Required]
         public string UserId { get; set; }
         [Required]
-        public int WalletId { get; set; }
+        public string WalletId { get; set; }
         [Required]
         public double Amount { get; set; }
     }

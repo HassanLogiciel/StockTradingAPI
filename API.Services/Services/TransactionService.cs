@@ -12,11 +12,13 @@ namespace API.Services.Services
         private readonly IUserRepository _userRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITransactionRepo _transactionRepo;
-        public TransactionService(IUserRepository userRepo, IUnitOfWork unitOfWork, ITransactionRepo transactionRepo)
+        private readonly IWalletRepository _walletRepo;
+        public TransactionService(IUserRepository userRepo, IUnitOfWork unitOfWork, ITransactionRepo transactionRepo, IWalletRepository walletRepo)
         {
             _userRepo = userRepo;
             _unitOfWork = unitOfWork;
             _transactionRepo = transactionRepo;
+            _walletRepo = walletRepo;
         }
 
         public async Task<Response> DepositAsync(DepositVm model)
@@ -24,7 +26,15 @@ namespace API.Services.Services
             var response = new Response();
             if (model != null)
             {
-                //var wallet = 
+                var wallet = await _walletRepo.GetByIdAsync(model.WalletId);
+                if (wallet == null)
+                {
+
+                }
+                else
+                {
+                    response.Errors.Add("No wallet found Please contact admin.");
+                }
             }
             return response;
         }
