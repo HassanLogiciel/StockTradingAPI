@@ -7,6 +7,7 @@ namespace API.Data.Entities
         public string UserId { get; set; }
         public TransactionType Type { get; set; }
         public string Description { get; set; }
+        public float Amount { get; set; }
         public Status Status { get; set; }
         public Wallet Wallet { get; set; }
     }

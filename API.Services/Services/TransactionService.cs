@@ -27,21 +27,28 @@ namespace API.Services.Services
             var response = new Response();
             if (model != null)
             {
-                var wallet = await _walletRepo.GetByIdAndUserIdAsync(model.WalletId,model.UserId);
-                if (wallet == null)
+                var user = await _userRepo.GetByIdAsync(model.UserId);
+                if (user != null)
                 {
-                    var transaction = new Transaction()
+                    var wallet = await _walletRepo.GetByIdAndUserIdAsync(model.WalletId, model.UserId);
+                    if (wallet == null)
                     {
-                       Type =  TransactionType.Deposit,
-                       UserId = wallet.UserId,
-                        //StatusId= 1,
-
-                       
-                    };
+                        var transaction = new Transaction()
+                        {
+                            Type = TransactionType.Deposit,
+                            UserId = wallet.UserId,
+                            Status = Status.Pending,
+                            CreatedBy = user.UserName,
+                        };
+                    }
+                    else
+                    {
+                        response.Errors.Add("No wallet found Please contact admin.");
+                    }
                 }
                 else
                 {
-                    response.Errors.Add("No wallet found Please contact admin.");
+                    response.Errors.Add("Invalid User.");
                 }
             }
             return response;

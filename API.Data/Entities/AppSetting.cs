@@ -8,5 +8,7 @@ namespace API.Data.Entities
    public class AppSetting : EntityBase
     {
         public virtual Currency Currency { get; set; }
+        public float MaxDeposit { get; set; }
+        public float MaxWithDraw { get; set; }
     }
 }

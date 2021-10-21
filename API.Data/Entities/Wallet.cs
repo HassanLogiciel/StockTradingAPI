@@ -8,7 +8,7 @@ namespace API.Data.Entities
 {
     public class Wallet : EntityBase
     {
-        public double Amount { get; set; }
+        public float Amount { get; set; }
         public string UserId { get; set; }
         public virtual ICollection<WalletEvent> WalletEvents { get; set; } = new List<WalletEvent>();
         public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
