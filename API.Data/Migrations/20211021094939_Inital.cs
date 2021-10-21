@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -114,25 +114,17 @@ namespace API.Data.Migrations
                     ModifiedBy = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
-                    Type = table.Column<string>(nullable: true),
+                    Type = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    StatusId = table.Column<int>(nullable: false),
-                    StatusId1 = table.Column<Guid>(nullable: true),
-                    WalletId = table.Column<int>(nullable: false),
-                    WalletId1 = table.Column<Guid>(nullable: true)
+                    Status = table.Column<int>(nullable: false),
+                    WalletId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transactions_Statuses_StatusId1",
-                        column: x => x.StatusId1,
-                        principalTable: "Statuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Transactions_Wallets_WalletId1",
-                        column: x => x.WalletId1,
+                        name: "FK_Transactions_Wallets_WalletId",
+                        column: x => x.WalletId,
                         principalTable: "Wallets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -170,14 +162,9 @@ namespace API.Data.Migrations
                 column: "CurrencyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_StatusId1",
+                name: "IX_Transactions_WalletId",
                 table: "Transactions",
-                column: "StatusId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_WalletId1",
-                table: "Transactions",
-                column: "WalletId1");
+                column: "WalletId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WalletEvents_WalletId",
@@ -191,6 +178,9 @@ namespace API.Data.Migrations
                 name: "AppSettings");
 
             migrationBuilder.DropTable(
+                name: "Statuses");
+
+            migrationBuilder.DropTable(
                 name: "Stocks");
 
             migrationBuilder.DropTable(
@@ -201,9 +191,6 @@ namespace API.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Currencies");
-
-            migrationBuilder.DropTable(
-                name: "Statuses");
 
             migrationBuilder.DropTable(
                 name: "Wallets");

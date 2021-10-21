@@ -1,4 +1,5 @@
 ﻿using API.Common;
+using API.Data.Entities;
 using API.Data.Interfaces;
 using API.Services.Services.Interfaces;
 using API.Services.ViewModels;
@@ -26,10 +27,17 @@ namespace API.Services.Services
             var response = new Response();
             if (model != null)
             {
-                var wallet = await _walletRepo.GetByIdAsync(model.WalletId);
+                var wallet = await _walletRepo.GetByIdAndUserIdAsync(model.WalletId,model.UserId);
                 if (wallet == null)
                 {
+                    var transaction = new Transaction()
+                    {
+                       Type =  TransactionType.Deposit,
+                       UserId = wallet.UserId,
+                        //StatusId= 1,
 
+                       
+                    };
                 }
                 else
                 {

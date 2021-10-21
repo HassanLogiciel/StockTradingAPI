@@ -12,11 +12,4 @@ namespace API.Data.Entities
         public Status Status { get; set; }
         public string Name { get; set; }
     }
-
-    public enum Status
-    {
-        Approved,
-        Pending,
-        Rejected
-    }
 }

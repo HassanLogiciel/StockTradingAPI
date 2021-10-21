@@ -1,4 +1,5 @@
-﻿using API.Data.Data;
+﻿using API.Common;
+using API.Data.Data;
 using API.Data.Entities;
 using API.Data.Interfaces;
 using API.Data.Model;
@@ -24,10 +25,14 @@ namespace API.Data.Repository
         {
             await _applicationContext.Wallets.AddAsync(model);
         }
-
         public async Task<List<Wallet>> GetAllAsync()
         {
             return await _applicationContext.Wallets.ToListAsync();
+        }
+
+        public async Task<Wallet> GetByIdAndUserIdAsync(string walletId, string userId)
+        {
+            return await _applicationContext.Wallets.Where(c => c.Id.ToString() == walletId && c.UserId == userId).FirstOrDefaultAsync();
         }
 
         public async Task<Wallet> GetByIdAsync(string id)

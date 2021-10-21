@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20211020134039_Initial")]
-    partial class Initial
+    [Migration("20211021094939_Inital")]
+    partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -175,29 +175,21 @@ namespace API.Data.Migrations
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StatusId")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("StatusId1")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WalletId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("WalletId1")
+                    b.Property<Guid?>("WalletId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StatusId1");
-
-                    b.HasIndex("WalletId1");
+                    b.HasIndex("WalletId");
 
                     b.ToTable("Transactions");
                 });
@@ -283,13 +275,9 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Data.Entities.Transaction", b =>
                 {
-                    b.HasOne("API.Data.Entities.StatusDb", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId1");
-
                     b.HasOne("API.Data.Entities.Wallet", "Wallet")
-                        .WithMany()
-                        .HasForeignKey("WalletId1");
+                        .WithMany("Transactions")
+                        .HasForeignKey("WalletId");
                 });
 
             modelBuilder.Entity("API.Data.Entities.WalletEvent", b =>
