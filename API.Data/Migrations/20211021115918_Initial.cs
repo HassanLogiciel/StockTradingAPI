@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Data.Migrations
 {
-    public partial class Inital : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,7 +11,7 @@ namespace API.Data.Migrations
                 name: "Currencies",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     CreatedBy = table.Column<string>(nullable: true),
                     Modified = table.Column<DateTime>(nullable: true),
@@ -26,28 +26,10 @@ namespace API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Statuses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Created = table.Column<DateTime>(nullable: false),
-                    CreatedBy = table.Column<string>(nullable: true),
-                    Modified = table.Column<DateTime>(nullable: true),
-                    ModifiedBy = table.Column<string>(nullable: true),
-                    IsActive = table.Column<bool>(nullable: false),
-                    Status = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Statuses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Stocks",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     CreatedBy = table.Column<string>(nullable: true),
                     Modified = table.Column<DateTime>(nullable: true),
@@ -66,13 +48,13 @@ namespace API.Data.Migrations
                 name: "Wallets",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     CreatedBy = table.Column<string>(nullable: true),
                     Modified = table.Column<DateTime>(nullable: true),
                     ModifiedBy = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
+                    Amount = table.Column<float>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -84,13 +66,15 @@ namespace API.Data.Migrations
                 name: "AppSettings",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     CreatedBy = table.Column<string>(nullable: true),
                     Modified = table.Column<DateTime>(nullable: true),
                     ModifiedBy = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
-                    CurrencyId = table.Column<Guid>(nullable: true)
+                    CurrencyId = table.Column<string>(nullable: true),
+                    MaxDeposit = table.Column<float>(nullable: false),
+                    MaxWithDraw = table.Column<float>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -107,7 +91,7 @@ namespace API.Data.Migrations
                 name: "Transactions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     CreatedBy = table.Column<string>(nullable: true),
                     Modified = table.Column<DateTime>(nullable: true),
@@ -116,8 +100,9 @@ namespace API.Data.Migrations
                     UserId = table.Column<string>(nullable: true),
                     Type = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true),
+                    Amount = table.Column<float>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    WalletId = table.Column<Guid>(nullable: true)
+                    WalletId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -134,7 +119,7 @@ namespace API.Data.Migrations
                 name: "WalletEvents",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     CreatedBy = table.Column<string>(nullable: true),
                     Modified = table.Column<DateTime>(nullable: true),
@@ -143,7 +128,7 @@ namespace API.Data.Migrations
                     EventType = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: true),
-                    WalletId = table.Column<Guid>(nullable: true)
+                    WalletId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -176,9 +161,6 @@ namespace API.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AppSettings");
-
-            migrationBuilder.DropTable(
-                name: "Statuses");
 
             migrationBuilder.DropTable(
                 name: "Stocks");

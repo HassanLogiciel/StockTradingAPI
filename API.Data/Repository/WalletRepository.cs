@@ -32,7 +32,8 @@ namespace API.Data.Repository
 
         public async Task<Wallet> GetByIdAndUserIdAsync(string walletId, string userId)
         {
-            return await _applicationContext.Wallets.Where(c => c.Id.ToString() == walletId && c.UserId == userId).FirstOrDefaultAsync();
+            var res = await _applicationContext.Wallets.Where(c => c.Id  == walletId.ToLower() && c.UserId.ToLower() == userId.ToLower()).FirstOrDefaultAsync();
+            return res;
         }
 
         public async Task<Wallet> GetByIdAsync(string id)

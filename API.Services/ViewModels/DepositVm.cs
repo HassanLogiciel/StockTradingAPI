@@ -12,6 +12,6 @@ namespace API.Services.ViewModels
         [Required]
         public string WalletId { get; set; }
         [Required]
-        public double Amount { get; set; }
+        public float Amount { get; set; }
     }
 }

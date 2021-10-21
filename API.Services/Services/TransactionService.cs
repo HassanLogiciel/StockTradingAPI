@@ -14,12 +14,14 @@ namespace API.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITransactionRepo _transactionRepo;
         private readonly IWalletRepository _walletRepo;
-        public TransactionService(IUserRepository userRepo, IUnitOfWork unitOfWork, ITransactionRepo transactionRepo, IWalletRepository walletRepo)
+        private readonly IAppSettingsRepo _appSettingRepo;
+        public TransactionService(IUserRepository userRepo, IUnitOfWork unitOfWork, ITransactionRepo transactionRepo, IWalletRepository walletRepo, IAppSettingsRepo appSettingRepo)
         {
             _userRepo = userRepo;
             _unitOfWork = unitOfWork;
             _transactionRepo = transactionRepo;
             _walletRepo = walletRepo;
+            _appSettingRepo = appSettingRepo;
         }
 
         public async Task<Response> DepositAsync(DepositVm model)
@@ -28,27 +30,55 @@ namespace API.Services.Services
             if (model != null)
             {
                 var user = await _userRepo.GetByIdAsync(model.UserId);
-                if (user != null)
+                var appSettings = await _appSettingRepo.GetSettings();
+                if (appSettings != null)
                 {
-                    var wallet = await _walletRepo.GetByIdAndUserIdAsync(model.WalletId, model.UserId);
-                    if (wallet == null)
+                    if (user != null)
                     {
-                        var transaction = new Transaction()
+                        var wallet = await _walletRepo.GetByIdAndUserIdAsync(model.WalletId, model.UserId);
+                        if (wallet != null)
                         {
-                            Type = TransactionType.Deposit,
-                            UserId = wallet.UserId,
-                            Status = Status.Pending,
-                            CreatedBy = user.UserName,
-                        };
+                            if (model.Amount <= appSettings.MaxDeposit && model.Amount > 0)
+                            {
+                                var transaction = new Transaction()
+                                {
+                                    Type = TransactionType.Deposit,
+                                    UserId = wallet.UserId,
+                                    Status = Status.Pending,
+                                    CreatedBy = user.UserName,
+                                    Description = $"Request For amount deposit {model.Amount}",
+                                    IsActive = true,
+                                    Amount = model.Amount,
+                                    Wallet = wallet,
+                                };
+                                await _transactionRepo.Create(transaction);
+                                var result = await _unitOfWork.SaveChanges();
+                                if (!result.IsSuccess)
+                                {
+                                    foreach (var item in result.Errors)
+                                    {
+                                        response.Errors.Add(item);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                response.Errors.Add("Invalid amount. Max amount allowed 5000 and Min amount 0");
+                            }
+                        }
+                        else
+                        {
+                            response.Errors.Add("No wallet found Please contact admin.");
+                        }
                     }
                     else
                     {
-                        response.Errors.Add("No wallet found Please contact admin.");
+                        response.Errors.Add("Invalid User.");
                     }
                 }
                 else
                 {
-                    response.Errors.Add("Invalid User.");
+                    response.Errors.Add("Invalid Settings. Please set the currency and max values.");
                 }
             }
             return response;

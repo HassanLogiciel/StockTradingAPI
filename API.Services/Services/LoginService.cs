@@ -56,8 +56,8 @@ namespace API.Services.Services
                                 configurationBuilder.AddJsonFile(path, false);
                                 IConfigurationRoot root = configurationBuilder.Build();
                                 IConfigurationSection configurationServerUrl = root.GetSection("IdentityServerUrl");
-                                 IConfigurationSection configurationNormalUserScopes = root.GetSection("NormalUserScopes");
-                                 IConfigurationSection configurationAdminScopes = root.GetSection("AdminScopes");
+                                IConfigurationSection configurationNormalUserScopes = root.GetSection("NormalUserScopes");
+                                IConfigurationSection configurationAdminScopes = root.GetSection("AdminScopes");
 
                                 var identityServerUrl = configurationServerUrl.Value;
                                 var clientId = model.ClientId;

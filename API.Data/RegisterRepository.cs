@@ -18,6 +18,7 @@ namespace API.Data
             services.AddScoped<IWalletRepository, WalletRepository>();
             services.AddScoped<ITransactionRepo, TransactionRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAppSettingsRepo, AppSettingsRepo>();
         }
     }
 }
