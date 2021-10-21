@@ -17,9 +17,9 @@ namespace API.Data.Repository
             _applicationContext = applicationContext;
         }
 
-        public Task<Transaction> Create(Transaction model)
+        public async Task Create(Transaction model)
         {
-            throw new NotImplementedException();
+            await _applicationContext.Transactions.AddAsync(model);
         }
 
         public async Task<List<Transaction>> GetAll()
@@ -29,12 +29,12 @@ namespace API.Data.Repository
 
         public async Task<Transaction> GetById(string Id)
         {
-            return await _applicationContext.FindAsync<Transaction>();
+            return await _applicationContext.FindAsync<Transaction>(Id);
         }
 
-        public Task<Transaction> Update(Transaction model)
+        public void Update(Transaction model)
         {
-            throw new NotImplementedException();
+            _applicationContext.Transactions.Update(model);
         }
     }
 }

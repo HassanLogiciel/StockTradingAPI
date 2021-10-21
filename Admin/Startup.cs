@@ -66,7 +66,6 @@ namespace Admin
                 });
             });
             services.AddControllers();
-            services.AddScoped<IUserService, UserService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo() 
@@ -75,7 +74,7 @@ namespace Admin
                     Version = "V1"
                 });
             });
-            services.ResolveAdminDependencies();
+            services.ResolveStockTraderDependencies();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

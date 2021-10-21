@@ -8,7 +8,7 @@ namespace API.Data.Interfaces
 {
     public interface ITransactionRepo : IRepository<Transaction>
     {
-        Task<Transaction> Create(Transaction model);
-        Task<Transaction> Update(Transaction model);
+        Task Create(Transaction model);
+        void Update(Transaction model);
     }
 }

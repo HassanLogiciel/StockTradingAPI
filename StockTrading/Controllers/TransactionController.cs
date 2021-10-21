@@ -11,6 +11,14 @@ namespace StockTrading.Controllers
     [ApiController]
     public class TransactionController : ControllerBase
     {
+        public async Task<IActionResult> Deposit()
+        {
+            return Ok();
+        }
 
+        public async Task<IActionResult> Withdraw()
+        {
+            return Ok();
+        }
     }
 }

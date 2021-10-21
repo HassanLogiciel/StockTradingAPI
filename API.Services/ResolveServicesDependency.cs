@@ -32,6 +32,14 @@ namespace API.Services
         {
             services.ResolveRepositoryDependencies();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITransactionService, TransactionService>();
+        }
+
+        public static void ResolveStockTraderDependencies(this IServiceCollection services)
+        {
+            services.ResolveRepositoryDependencies();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITransactionService, TransactionService>();
         }
     }
 }

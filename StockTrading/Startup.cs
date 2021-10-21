@@ -1,14 +1,19 @@
+using API.Data.Data;
+using API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace StockTrading
@@ -25,7 +30,35 @@ namespace StockTrading
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var config = new ConfigurationBuilder().SetBasePath(System.IO.Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", false).Build();
+            var connectionString = config.GetConnectionString("IdentityConnectionString");
+            var applicationConnectionString = config.GetConnectionString("ApplcationConnectionString");
+            var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            services.AddDbContext<IdentityContext>(op => op.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
+            services.AddDbContext<ApplicationContext>(op => op.UseSqlServer(applicationConnectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", op =>
+                {
+                    op.Authority = "https://localhost:44396";
+                    op.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
+            services.AddAuthorization(option =>
+            {
+                option.AddPolicy("ApiScope", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "");
+                });
+                option.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireClaim("RoleType", "");
+                });
+            });
             services.AddControllers();
+            services.ResolveAdminDependencies();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
