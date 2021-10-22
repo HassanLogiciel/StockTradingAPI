@@ -103,7 +103,7 @@ namespace Admin
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapControllers().RequireAuthorization("ApiScope");
+                //endpoints.MapControllers().RequireAuthorization("ApiScope");
                 //endpoints.MapControllerRoute(name: "userController", pattern: "{controller=User}").RequireAuthorization("UserApi");
 
             });
