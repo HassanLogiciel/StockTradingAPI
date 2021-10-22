@@ -10,5 +10,6 @@ namespace API.Data.Interfaces
     {
         Task Create(Transaction model);
         void Update(Transaction model);
+        Task<List<Transaction>> GetByUserId(string userId);
     }
 }

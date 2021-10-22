@@ -60,6 +60,11 @@ namespace Admin
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("scope", "UserApi");
                 });
+                option.AddPolicy("TransactionAdminApi", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "TransactionAdminApi");
+                });
                 option.AddPolicy("Admin", policy =>
                 {
                     policy.RequireClaim("RoleType", "Admin");
