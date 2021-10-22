@@ -70,7 +70,7 @@ namespace Admin
                     policy.RequireClaim("RoleType", "Admin");
                 });
             });
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo() 

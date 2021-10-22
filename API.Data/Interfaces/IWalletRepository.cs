@@ -13,5 +13,6 @@ namespace API.Data.Interfaces
         public Task Create(Wallet model);
         public void Update(Wallet model);
         public Task<Wallet> GetByIdAndUserIdAsync(string walletId, string userId);
+        public Task<Wallet> GetByUserIdAsync(string userId);
     }
 }

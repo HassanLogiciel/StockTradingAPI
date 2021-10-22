@@ -1,4 +1,5 @@
 ﻿using API.Services.Services.Interfaces;
+using API.Services.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,18 @@ namespace Admin.Controllers
         public async Task<IActionResult> Get(string userId)
         {
             var response = await _transactionService.GetUserTransactionsAsync(userId);
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpPut]
+        [Route("SetStatus")]
+        public async Task<IActionResult> SetStatus([FromBody] TransactionStatusVm model)
+        {
+            var response = await _transactionService.SetTransactionStatus(model);
             if (response.IsSuccess)
             {
                 return Ok(response);

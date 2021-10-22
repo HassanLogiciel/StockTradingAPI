@@ -21,6 +21,7 @@ namespace API.Data.Entities
     {
         Approved,
         Pending,
-        Rejected
+        Rejected,
+        Invalid
     }
 }

@@ -94,7 +94,7 @@ namespace API.Services.Services
 
             return response;
         }
-        public  ResponseObject<List<StatusDto>> GetTransactionsStatuses()
+        public ResponseObject<List<StatusDto>> GetTransactionsStatuses()
         {
             var response = new ResponseObject<List<StatusDto>>();
             try
@@ -119,6 +119,7 @@ namespace API.Services.Services
                     var transtions = await _transactionRepo.GetByUserId(id);
                     var dto = transtions.Select(c => new TransactionDto()
                     {
+                        Id = c.Id,
                         Amount = c.Amount,
                         Description = c.Description,
                         Status = c.Status.ToString(),
@@ -132,6 +133,106 @@ namespace API.Services.Services
                 {
                     response.Errors.Add(ex.ToString());
                 }
+            }
+            return response;
+        }
+        public async Task<Response> SetTransactionStatus(TransactionStatusVm model)
+        {
+            var response = new Response();
+            try
+            {
+                if (model != null  && model.Status != Status.Invalid)
+                {
+                    var user = await _userRepo.GetByIdAsync(model.UserId);
+                    if (user != null)
+                    {
+                        var wallet = await _walletRepo.GetByUserIdAsync(model.UserId);
+                        if (wallet != null)
+                        {
+                            var transaction = await _transactionRepo.GetByIdAsync(model.TransactionId);
+                            if (transaction != null)
+                            {
+                                if (transaction.Status == Status.Pending)
+                                {
+                                    if (transaction.Wallet.Id == wallet.Id)
+                                    {
+                                        if (model.Status == Status.Approved)
+                                        {
+                                            transaction.Status = Status.Approved;
+                                            if (transaction.Type == TransactionType.Deposit)
+                                            {
+                                                var newWalletAmount = wallet.Amount + transaction.Amount;
+                                                wallet.Amount = newWalletAmount;
+                                            }
+                                            else if (transaction.Type == TransactionType.Withdrawal)
+                                            {
+                                                if (wallet.Amount >= transaction.Amount)
+                                                {
+                                                    var newWalletAmount = Extenstions.SubtractFloat(wallet.Amount, transaction.Amount);
+                                                    wallet.Amount = newWalletAmount;
+                                                }
+                                                else
+                                                {
+                                                    response.Errors.Add("Can not Approve Wallet amout is less then transaction amount.");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                response.Errors.Add("Invalid Transaction Type.");
+                                            }
+                                        }
+                                        else if (model.Status == Status.Rejected)
+                                        {
+                                            transaction.Status = Status.Rejected;
+                                        }
+                                        else
+                                        {
+                                            response.Errors.Add("Invalid Transaction Status.");
+                                        }
+                                        var result = await _unitOfWork.SaveChanges();
+                                        if (!result.IsSuccess)
+                                        {
+                                            foreach (var item in result.Errors)
+                                            {
+                                                response.Errors.Add(item);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        response.Errors.Add("Wallet and Transaction are different.");
+
+                                    }
+                                }
+                                else
+                                {
+                                    response.Errors.Add($"Transaction status can not be revert. Transcation status is {transaction.Status.ToString()}");
+                                }
+                            }
+                            else
+                            {
+                                response.Errors.Add("Invalid transaction id.");
+                            }
+                        }
+                        else
+                        {
+                            response.Errors.Add("No wallet found. Please contact the admin");
+                        }
+                    }
+                    else
+                    {
+                        response.Errors.Add("Invalid User.");
+                    }
+                }
+                else
+                {
+                    response.Errors.Add("Please Enter the valid User Id and Transaction Id.");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.Errors.Add(ex.Message.ToString());
             }
             return response;
         }
@@ -211,6 +312,5 @@ namespace API.Services.Services
 
             return response;
         }
-
     }
 }

@@ -41,6 +41,11 @@ namespace API.Data.Repository
             return await _applicationContext.Wallets.FindAsync(id);
         }
 
+        public async Task<Wallet> GetByUserIdAsync(string userId)
+        {
+           return await _applicationContext.Wallets.Where(c => c.UserId.ToLower() == userId.ToLower()).FirstOrDefaultAsync();
+        }
+
         public void Update(Wallet model)
         {
             _applicationContext.Wallets.Update(model);

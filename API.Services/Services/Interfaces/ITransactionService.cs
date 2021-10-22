@@ -13,7 +13,9 @@ namespace API.Services.Services.Interfaces
     {
         public Task<Response> DepositAsync(DepositVm model);
         public Task<Response> WithdrawAsync(WithdrawVm model);
+        public Task<Response> SetTransactionStatus(TransactionStatusVm model);
         public Task<ResponseObject<List<TransactionDto>>> GetUserTransactionsAsync(string id);
         public ResponseObject<List<StatusDto>> GetTransactionsStatuses();
+
     }
 }
