@@ -5,7 +5,7 @@ using System.Text;
 
 namespace API.Services.ViewModels
 {
-    public class DepositVm
+    public class WithdrawVm
     {
         [Required]
         public string UserId { get; set; }

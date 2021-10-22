@@ -10,6 +10,6 @@ namespace API.Services.Services.Interfaces
     public interface ITransactionService
     {
         public Task<Response> DepositAsync(DepositVm model);
-        public Task<Response> WithdrawAsync();
+        public Task<Response> WithdrawAsync(WithdrawVm model);
     }
 }

@@ -36,9 +36,20 @@ namespace StockTrading.Controllers
             return BadRequest(response);
         }
 
-        public async Task<IActionResult> Withdraw()
+        [HttpPost]
+        [Route("Withdraw")]
+        public async Task<IActionResult> Withdraw([FromBody] WithdrawVm model)
         {
-            return Ok();
+            var response = new Response();
+            if (ModelState.IsValid)
+            {
+                response = await _transactionService.WithdrawAsync(model);
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
+            }
+            return BadRequest(response);
         }
     }
 }
