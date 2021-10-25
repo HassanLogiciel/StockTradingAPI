@@ -20,13 +20,20 @@ namespace API.Services.Services
         private readonly ITransactionRepo _transactionRepo;
         private readonly IWalletRepository _walletRepo;
         private readonly IAppSettingsRepo _appSettingRepo;
-        public TransactionService(IUserRepository userRepo, IUnitOfWork unitOfWork, ITransactionRepo transactionRepo, IWalletRepository walletRepo, IAppSettingsRepo appSettingRepo)
+        private readonly IEmailService  _emailService;
+        public TransactionService(IUserRepository userRepo, 
+                                  IUnitOfWork unitOfWork, 
+                                  ITransactionRepo transactionRepo, 
+                                  IWalletRepository walletRepo, 
+                                  IAppSettingsRepo appSettingRepo, 
+                                  IEmailService emailService)
         {
             _userRepo = userRepo;
             _unitOfWork = unitOfWork;
             _transactionRepo = transactionRepo;
             _walletRepo = walletRepo;
             _appSettingRepo = appSettingRepo;
+            _emailService = emailService;
         }
         public async Task<Response> DepositAsync(DepositVm model)
         {
