@@ -118,7 +118,8 @@ namespace API.Services.Services
             {
                 try
                 {
-                    var transtions = await _transactionRepo.GetByUserId(id);
+                    //var transtions = await _transactionRepo.GetByUserId(id);
+                    var transtions = await _transactionRepo.GetTransactions(TransactionSpecification.ByUserId(id));
                     var dto = transtions.Select(c => new TransactionDto()
                     {
                         Id = c.Id,

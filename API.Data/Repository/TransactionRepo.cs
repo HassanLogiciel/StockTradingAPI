@@ -1,6 +1,7 @@
 ﻿using API.Data.Data;
 using API.Data.Entities;
 using API.Data.Interfaces;
+using API.Data.Specification;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,12 @@ namespace API.Data.Repository
                 .Where(c=>c.UserId == userId).ToListAsync();
         }
 
+        public async Task<List<Transaction>> GetTransactions(TransactionSpecification specification)
+        {
+            return await _applicationContext.Transactions
+          .Include(c => c.Wallet)
+          .Where(specification.Criteria).ToListAsync();
+        }
         public void Update(Transaction model)
         {
             _applicationContext.Transactions.Update(model);
