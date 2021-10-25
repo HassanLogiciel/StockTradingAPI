@@ -1,5 +1,6 @@
 ﻿using API.Common;
 using API.Services.Services;
+using API.Services.Services.Dtos;
 using API.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace Login.Controllers
         }
         public async Task<IActionResult> Post([FromBody]LoginVm model)
         {
-            var response = new Response();
+            var response = new ResponseObject<LoginDto>();
             if (ModelState.IsValid)
             {
                 response =await _loginService.LoginUser(model);
