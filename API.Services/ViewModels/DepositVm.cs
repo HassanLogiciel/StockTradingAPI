@@ -12,7 +12,7 @@ namespace API.Services.ViewModels
         [Required]
         public string WalletId { get; set; }
         [Required]
-        [RegularExpression(@"^[0-9]*(\.[0-9]{1,2})?$", ErrorMessage = "Please Enter the valid amount. Only Two decimal places are allowed.")]
+        [RegularExpression(@"^[0-9]*(\.[0-9]{1,2})?$", ErrorMessage = "Please Enter the valid amount.")]
         public float Amount { get; set; }
     }
 }

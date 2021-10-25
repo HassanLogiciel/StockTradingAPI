@@ -38,28 +38,11 @@ namespace API.Data.Repository
                 .Include(c => c.WalletEvents).Where(specification.Criteria).FirstOrDefaultAsync();
         }
 
-        public async Task<Wallet> GetByIdAndUserIdAsync(string walletId, string userId)
-        {
-            var res = await _applicationContext.Wallets.Where(c => c.Id  == walletId.ToLower() && c.UserId.ToLower() == userId.ToLower()).FirstOrDefaultAsync();
-            return res;
-        }
-
-        public async Task<Wallet> GetByIdAndUserIdAsync(WalletSpecification specification)
-        {
-            var res = await _applicationContext.Wallets.Where(specification.Criteria).FirstOrDefaultAsync();
-            return res;
-        }
-
+    
         public async Task<Wallet> GetByIdAsync(string id)
         {
             return await _applicationContext.Wallets.FindAsync(id);
         }
-
-        public async Task<Wallet> GetByUserIdAsync(string userId)
-        {
-           return await _applicationContext.Wallets.Where(c => c.UserId.ToLower() == userId.ToLower()).FirstOrDefaultAsync();
-        }
-
         public void Update(Wallet model)
         {
             _applicationContext.Wallets.Update(model);

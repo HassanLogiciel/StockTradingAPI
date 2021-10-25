@@ -2,6 +2,7 @@
 using API.Common.Helpers;
 using API.Data.Entities;
 using API.Data.Interfaces;
+using API.Data.Specification;
 using API.Services.Services.Dtos;
 using API.Services.Services.Interfaces;
 using API.Services.ViewModels;
@@ -40,7 +41,8 @@ namespace API.Services.Services
                     {
                         if (user != null)
                         {
-                            var wallet = await _walletRepo.GetByIdAndUserIdAsync(model.WalletId, model.UserId);
+                            //var wallet = await _walletRepo.GetByIdAndUserIdAsync(model.WalletId, model.UserId);
+                            var wallet = await _walletRepo.GetAsync(WalletSpecification.ByUserIdAndWalletId(model.UserId,model.WalletId));
                             if (wallet != null)
                             {
                                 if (model.Amount <= appSettings.MaxDeposit && model.Amount > 0.01f)
@@ -146,7 +148,7 @@ namespace API.Services.Services
                     var user = await _userRepo.GetByIdAsync(model.UserId);
                     if (user != null)
                     {
-                        var wallet = await _walletRepo.GetByUserIdAsync(model.UserId);
+                        var wallet = await _walletRepo.GetAsync(WalletSpecification.ByUserId(model.UserId));
                         if (wallet != null)
                         {
                             var transaction = await _transactionRepo.GetByIdAsync(model.TransactionId);
@@ -249,7 +251,7 @@ namespace API.Services.Services
                     {
                         if (user != null)
                         {
-                            var wallet = await _walletRepo.GetByIdAndUserIdAsync(model.WalletId, model.UserId);
+                            var wallet = await _walletRepo.GetAsync(WalletSpecification.ByUserIdAndWalletId(model.UserId, model.WalletId));
                             if (wallet != null)
                             {
                                 if (wallet.Amount >= model.Amount)

@@ -16,5 +16,14 @@ namespace API.Data.Specification
         {
             return new WalletSpecification(c => c.Id == id);
         }
+        public static WalletSpecification ByUserId(string userId)
+        {
+            return new WalletSpecification(c => c.UserId == userId);
+        }
+
+        public static WalletSpecification ByUserIdAndWalletId(string userId, string walletId)
+        {
+            return new WalletSpecification(c => c.UserId == userId && c.Id == walletId);
+        }
     }
 }
