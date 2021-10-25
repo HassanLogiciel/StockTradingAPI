@@ -9,13 +9,12 @@ namespace API.Data.Specification
 {
     public class WalletSpecification : Specification<Wallet>
     {
-        public WalletSpecification(string userId) : base(b => b.UserId == userId)
+        //public Expression<Func<Wallet, bool>> Criteria { get;  } 
+        public new Expression<Func<Wallet, bool>> Criteria { get; } = c => true;
+        public WalletSpecification(Expression<Func<Wallet, bool>> expression) => Criteria = expression;
+        public static WalletSpecification ById(string id)
         {
-        }
-
-        public static void ByUserId()
-        {
-
+            return new WalletSpecification(c => c.Id == id);
         }
     }
 }

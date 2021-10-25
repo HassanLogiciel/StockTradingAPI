@@ -1,6 +1,7 @@
 ﻿using API.Common;
 using API.Data.Entities;
 using API.Data.Model;
+using API.Data.Specification;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,6 +14,9 @@ namespace API.Data.Interfaces
         public Task Create(Wallet model);
         public void Update(Wallet model);
         public Task<Wallet> GetByIdAndUserIdAsync(string walletId, string userId);
+        public Task<Wallet> GetByIdAndUserIdAsync(WalletSpecification specification);
         public Task<Wallet> GetByUserIdAsync(string userId);
+        public Task<Wallet> GetAsync(WalletSpecification specification);
+
     }
 }

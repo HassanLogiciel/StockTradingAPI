@@ -57,6 +57,11 @@ namespace StockTrading
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("scope", "NUserApi");
                 });
+                option.AddPolicy("NWalletApi", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "NWalletApi");
+                });
                 option.AddPolicy("NormalUser", policy =>
                 {
                     policy.RequireAuthenticatedUser();

@@ -12,6 +12,10 @@ namespace API.Data.Specification
         {
             Criteria = criteria;
         }
+        public Specification()
+        {
+
+        }
         //public Expression<Func<T, bool>> Criteria { get; }
         //public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>>();
         //public List<string> IncludeStrings { get; } = new List<string>();

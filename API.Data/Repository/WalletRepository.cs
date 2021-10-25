@@ -3,6 +3,7 @@ using API.Data.Data;
 using API.Data.Entities;
 using API.Data.Interfaces;
 using API.Data.Model;
+using API.Data.Specification;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -30,9 +31,22 @@ namespace API.Data.Repository
             return await _applicationContext.Wallets.ToListAsync();
         }
 
+        public async Task<Wallet> GetAsync(WalletSpecification specification)
+        {
+            return await _applicationContext.Wallets
+                .Include(c => c.Transactions)
+                .Include(c => c.WalletEvents).Where(specification.Criteria).FirstOrDefaultAsync();
+        }
+
         public async Task<Wallet> GetByIdAndUserIdAsync(string walletId, string userId)
         {
             var res = await _applicationContext.Wallets.Where(c => c.Id  == walletId.ToLower() && c.UserId.ToLower() == userId.ToLower()).FirstOrDefaultAsync();
+            return res;
+        }
+
+        public async Task<Wallet> GetByIdAndUserIdAsync(WalletSpecification specification)
+        {
+            var res = await _applicationContext.Wallets.Where(specification.Criteria).FirstOrDefaultAsync();
             return res;
         }
 
