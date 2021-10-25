@@ -24,7 +24,7 @@ namespace API.Services.ViewModels
                 }
                 else if(StatusId == 1)
                 {
-                    return Status.Approved;
+                    return Status.Pending;
                 }
                 else if (StatusId == 2)
                 {

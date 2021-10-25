@@ -34,6 +34,7 @@ namespace API.Services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IWalletService, WalletService>();
+            services.AddScoped<IEmailService, EmailService>();
         }
 
         public static void ResolveStockTraderDependencies(this IServiceCollection services)
@@ -42,6 +43,7 @@ namespace API.Services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IWalletService, WalletService>();
+            services.AddScoped<IEmailService, EmailService>();
         }
     }
 }

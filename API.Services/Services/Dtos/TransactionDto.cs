@@ -1,7 +1,4 @@
-﻿using API.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace API.Services.Services.Dtos
 {
@@ -14,5 +11,6 @@ namespace API.Services.Services.Dtos
         public float Amount { get; set; }
         public string Status { get; set; }
         public string WalletId { get; set; }
+        public string Created { get; set; }
     }
 }

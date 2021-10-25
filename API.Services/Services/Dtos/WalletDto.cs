@@ -6,7 +6,7 @@ namespace API.Services.Services.Dtos
 {
     public class WalletDto
     {
-        public float Amount { get; set; }
+        public string Amount { get; set; }
         public string UserId { get; set; }
         public ICollection<WalletEventDto> WalletEvents { get; set; } = new List<WalletEventDto>();
         public ICollection<TransactionDto> Transactions { get; set; } = new List<TransactionDto>();

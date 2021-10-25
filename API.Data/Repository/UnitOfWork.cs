@@ -24,7 +24,7 @@ namespace API.Data.Repository
         {
             _context.Dispose();
         }
-        public async Task<DbResult> SaveChanges()
+        public async Task<DbResult> SaveChangesAsync()
         {
             var result = new DbResult();
             try

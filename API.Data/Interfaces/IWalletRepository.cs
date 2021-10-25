@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 
 namespace API.Data.Interfaces
 {
-    public interface IWalletRepository : IRepository<Wallet>
-    {
-        public Task Create(Wallet model);
-        public void Update(Wallet model);
-        public Task<Wallet> GetAsync(WalletSpecification specification);
+    public interface IWalletRepository   : IRepository<Wallet>
+    { 
+        public Task<Wallet> GetWalletAsync(WalletSpecification specification);
+        public Task<List<Wallet>> ListWalletAsync(WalletSpecification specification);
     }
 }

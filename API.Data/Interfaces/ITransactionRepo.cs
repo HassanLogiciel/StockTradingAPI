@@ -9,9 +9,7 @@ namespace API.Data.Interfaces
 {
     public interface ITransactionRepo : IRepository<Transaction>
     {
-        Task Create(Transaction model);
-        void Update(Transaction model);
-        Task<List<Transaction>> GetByUserId(string userId);
-        Task<List<Transaction>> GetTransactions(TransactionSpecification specification);
+        Task<List<Transaction>> ListTransactionsAsync(TransactionSpecification specification);
+        Task<Transaction> GetTransactionAsync(TransactionSpecification specification);
     }
 }

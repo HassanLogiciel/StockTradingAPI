@@ -10,6 +10,10 @@ namespace API.Services.Services.Model
 {
     public class EntityBase : IEnityBase
     {
+        public EntityBase()
+        {
+            Created = DateTime.Now;
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; } = Guid.NewGuid().ToString();

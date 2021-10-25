@@ -11,45 +11,26 @@ using System.Threading.Tasks;
 
 namespace API.Data.Repository
 {
-    public class TransactionRepo : ITransactionRepo
+    public class TransactionRepo : Repository<Transaction>, ITransactionRepo
     {
         private readonly ApplicationContext _applicationContext;
-        public TransactionRepo(ApplicationContext applicationContext)
+        public TransactionRepo(ApplicationContext applicationContext) : base(applicationContext)
         {
             _applicationContext = applicationContext;
         }
 
-        public async Task Create(Transaction model)
-        {
-            await _applicationContext.Transactions.AddAsync(model);
-        }
-
-        public async Task<List<Transaction>> GetAllAsync()
-        {
-            return await _applicationContext.Transactions.ToListAsync();
-        }
-
-        public async Task<Transaction> GetByIdAsync(string Id)
-        {
-            return await _applicationContext.FindAsync<Transaction>(Id);
-        }
-
-        public async Task<List<Transaction>> GetByUserId(string userId)
+        public async Task<Transaction> GetTransactionAsync(TransactionSpecification specification)
         {
             return await _applicationContext.Transactions
-                .Include(c=>c.Wallet)
-                .Where(c=>c.UserId == userId).ToListAsync();
+          .Include(c => c.Wallet)
+          .Where(specification.Criteria).FirstOrDefaultAsync();
         }
 
-        public async Task<List<Transaction>> GetTransactions(TransactionSpecification specification)
+        public async Task<List<Transaction>> ListTransactionsAsync(TransactionSpecification specification)
         {
             return await _applicationContext.Transactions
           .Include(c => c.Wallet)
           .Where(specification.Criteria).ToListAsync();
-        }
-        public void Update(Transaction model)
-        {
-            _applicationContext.Transactions.Update(model);
         }
     }
 }

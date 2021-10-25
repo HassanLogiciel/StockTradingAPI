@@ -16,6 +16,7 @@ namespace API.Services.Services.Model
         public string Country { get; set; }
         public string Phone { get; set; }
         public string Username { get; set; }
+        public string WalletId { get; set; }
         public bool IsActive { get; set; }
     }
 }

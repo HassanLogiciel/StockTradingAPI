@@ -1,6 +1,7 @@
 ﻿using API.Data.Data;
 using API.Data.Interfaces;
 using API.Data.Model;
+using API.Data.Specification;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,19 +15,18 @@ namespace API.Data.Repository
     {
         private readonly IdentityContext _identityContext;
 
-        public UserRepository(IdentityContext identityContext)
+        public UserRepository(IdentityContext identityContext)  
         {
             _identityContext = identityContext;
         }
-
-        public async Task<List<ApplicationUser>> GetAllAsync()
+        public async Task<ApplicationUser> GetUserAsync(ApplicationUserSpecification specification)
         {
-            return await _identityContext.Users.ToListAsync();
+            return await _identityContext.Users.Where(specification.Criteria).FirstOrDefaultAsync();
         }
 
-        public async Task<ApplicationUser> GetByIdAsync(string id)
+        public async Task<List<ApplicationUser>> ListUsersAsync(ApplicationUserSpecification specification)
         {
-            return await _identityContext.Users.Where(c=>c.Id == id).FirstOrDefaultAsync();
+            return await _identityContext.Users.Where(specification.Criteria).ToListAsync();
         }
     }
 }

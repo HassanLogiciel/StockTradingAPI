@@ -13,39 +13,26 @@ using System.Threading.Tasks;
 
 namespace API.Data.Repository
 {
-    public class WalletRepository : IWalletRepository
+    public class WalletRepository : Repository<Wallet> , IWalletRepository
     {
         private readonly ApplicationContext _applicationContext;
 
-        public WalletRepository(ApplicationContext applicationContext)
+        public WalletRepository(ApplicationContext applicationContext) : base(applicationContext)
         {
             _applicationContext = applicationContext;
         }
-
-        public async Task Create(Wallet model)
-        {
-            await _applicationContext.Wallets.AddAsync(model);
-        }
-        public async Task<List<Wallet>> GetAllAsync()
-        {
-            return await _applicationContext.Wallets.ToListAsync();
-        }
-
-        public async Task<Wallet> GetAsync(WalletSpecification specification)
+        public async Task<Wallet> GetWalletAsync(WalletSpecification specification)
         {
             return await _applicationContext.Wallets
                 .Include(c => c.Transactions)
                 .Include(c => c.WalletEvents).Where(specification.Criteria).FirstOrDefaultAsync();
         }
 
-    
-        public async Task<Wallet> GetByIdAsync(string id)
+        public async Task<List<Wallet>> ListWalletAsync(WalletSpecification specification)
         {
-            return await _applicationContext.Wallets.FindAsync(id);
-        }
-        public void Update(Wallet model)
-        {
-            _applicationContext.Wallets.Update(model);
+            return await _applicationContext.Wallets
+               .Include(c => c.Transactions)
+               .Include(c => c.WalletEvents).Where(specification.Criteria).ToListAsync();
         }
     }
 }

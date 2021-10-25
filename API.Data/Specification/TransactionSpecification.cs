@@ -17,5 +17,10 @@ namespace API.Data.Specification
         {
             return new TransactionSpecification(c => c.UserId == userId);
         }
+
+        public static TransactionSpecification ById(string id)
+        {
+            return new TransactionSpecification(c => c.Id == id);
+        }
     }
 }

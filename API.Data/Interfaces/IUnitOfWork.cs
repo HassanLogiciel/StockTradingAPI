@@ -9,6 +9,6 @@ namespace API.Data.Interfaces
     public interface IUnitOfWork : IDisposable
     {
 
-        public Task<DbResult> SaveChanges();
+        public Task<DbResult> SaveChangesAsync();
     }
 }

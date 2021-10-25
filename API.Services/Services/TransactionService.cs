@@ -42,14 +42,14 @@ namespace API.Services.Services
             {
                 if (model != null)
                 {
-                    var user = await _userRepo.GetByIdAsync(model.UserId);
+                    var user = await _userRepo.GetUserAsync(ApplicationUserSpecification.ById(model.UserId));
                     var appSettings = await _appSettingRepo.GetSettings();
                     if (appSettings != null)
                     {
                         if (user != null)
                         {
                             //var wallet = await _walletRepo.GetByIdAndUserIdAsync(model.WalletId, model.UserId);
-                            var wallet = await _walletRepo.GetAsync(WalletSpecification.ByUserIdAndWalletId(model.UserId,model.WalletId));
+                            var wallet = await _walletRepo.GetWalletAsync(WalletSpecification.ByUserIdAndWalletId(model.UserId,model.WalletId));
                             if (wallet != null)
                             {
                                 if (model.Amount <= appSettings.MaxDeposit && model.Amount > 0.01f)
@@ -64,9 +64,10 @@ namespace API.Services.Services
                                         IsActive = true,
                                         Amount = model.Amount,
                                         Wallet = wallet,
+                                        Created = DateTime.Now,
                                     };
                                     await _transactionRepo.Create(transaction);
-                                    var result = await _unitOfWork.SaveChanges();
+                                    var result = await _unitOfWork.SaveChangesAsync();
                                     if (!result.IsSuccess)
                                     {
                                         foreach (var item in result.Errors)
@@ -126,7 +127,7 @@ namespace API.Services.Services
                 try
                 {
                     //var transtions = await _transactionRepo.GetByUserId(id);
-                    var transtions = await _transactionRepo.GetTransactions(TransactionSpecification.ByUserId(id));
+                    var transtions = await _transactionRepo.ListTransactionsAsync(TransactionSpecification.ByUserId(id));
                     var dto = transtions.Select(c => new TransactionDto()
                     {
                         Id = c.Id,
@@ -153,13 +154,14 @@ namespace API.Services.Services
             {
                 if (model != null  && model.Status != Status.Invalid)
                 {
-                    var user = await _userRepo.GetByIdAsync(model.UserId);
+                    var user = await _userRepo.GetUserAsync(ApplicationUserSpecification.ById(model.UserId));
                     if (user != null)
                     {
-                        var wallet = await _walletRepo.GetAsync(WalletSpecification.ByUserId(model.UserId));
+                        var wallet = await _walletRepo.GetWalletAsync(WalletSpecification.ByUserId(model.UserId));
                         if (wallet != null)
                         {
-                            var transaction = await _transactionRepo.GetByIdAsync(model.TransactionId);
+                            //var transaction = await _transactionRepo.GetByIdAsync(model.TransactionId);
+                            var transaction = await _transactionRepo.GetTransactionAsync(TransactionSpecification.ById(model.TransactionId));
                             if (transaction != null)
                             {
                                 if (transaction.Status == Status.Pending)
@@ -194,12 +196,17 @@ namespace API.Services.Services
                                         else if (model.Status == Status.Rejected)
                                         {
                                             transaction.Status = Status.Rejected;
+                                            if (transaction.Type == TransactionType.Withdrawal)
+                                            {
+                                                var newWalletAmount = transaction.Amount + wallet.Amount;
+                                                wallet.Amount = newWalletAmount;
+                                            }
                                         }
                                         else
                                         {
                                             response.Errors.Add("Invalid Transaction Status.");
                                         }
-                                        var result = await _unitOfWork.SaveChanges();
+                                        var result = await _unitOfWork.SaveChangesAsync();
                                         if (!result.IsSuccess)
                                         {
                                             foreach (var item in result.Errors)
@@ -253,13 +260,13 @@ namespace API.Services.Services
             {
                 if (model != null)
                 {
-                    var user = await _userRepo.GetByIdAsync(model.UserId);
+                    var user = await _userRepo.GetUserAsync(ApplicationUserSpecification.ById(model.UserId));
                     var appSettings = await _appSettingRepo.GetSettings();
                     if (appSettings != null)
                     {
                         if (user != null)
                         {
-                            var wallet = await _walletRepo.GetAsync(WalletSpecification.ByUserIdAndWalletId(model.UserId, model.WalletId));
+                            var wallet = await _walletRepo.GetWalletAsync(WalletSpecification.ByUserIdAndWalletId(model.UserId, model.WalletId));
                             if (wallet != null)
                             {
                                 if (wallet.Amount >= model.Amount)
@@ -280,7 +287,7 @@ namespace API.Services.Services
                                             Wallet = wallet,
                                         };
                                         await _transactionRepo.Create(transaction);
-                                        var result = await _unitOfWork.SaveChanges();
+                                        var result = await _unitOfWork.SaveChangesAsync();
                                         if (!result.IsSuccess)
                                         {
                                             foreach (var item in result.Errors)

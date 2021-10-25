@@ -25,12 +25,12 @@ namespace API.Services.Services
             var response = new ResponseObject<WalletDto>();
             try
             {
-                var wallet = await _walletRepository.GetAsync(WalletSpecification.ById(id));
+                var wallet = await _walletRepository.GetWalletAsync(WalletSpecification.ById(id));
                 if (wallet != null)
                 {
                     var walletDto = new WalletDto()
                     {
-                        Amount = wallet.Amount,
+                        Amount = wallet.Amount.ToString("0.##"),
                         UserId = wallet.UserId,
                         WalletEvents = wallet.WalletEvents.Select(c => new WalletEventDto()
                         {
@@ -38,7 +38,7 @@ namespace API.Services.Services
                             UserId = c.UserId,
                             EventType = c.EventType
                         }).ToList(),
-                        Transactions = wallet.Transactions.Select(c => new TransactionDto()
+                        Transactions = wallet.Transactions.OrderByDescending(c=>c.Created).Select(c => new TransactionDto()
                         {
                             UserId = c.UserId,
                             Description = c.Description,
@@ -46,7 +46,8 @@ namespace API.Services.Services
                             Id = c.Id,
                             Status = c.Status.ToString(),
                             Type = c.Type.ToString(),
-                            WalletId = c.Wallet.Id
+                            WalletId = c.Wallet.Id,
+                            Created = c.Created.ToString("dd M yyyy hh:mm tt")
                         }).ToList()
                     };
 

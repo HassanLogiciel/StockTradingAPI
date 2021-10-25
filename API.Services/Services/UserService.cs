@@ -3,6 +3,7 @@ using API.Data.Data;
 using API.Data.Entities;
 using API.Data.Interfaces;
 using API.Data.Model;
+using API.Data.Specification;
 using API.Services.Services.Interfaces;
 using API.Services.Services.Model;
 using Microsoft.AspNetCore.Identity;
@@ -34,37 +35,45 @@ namespace API.Services.Services
             var response = new Response();
             if (userId != null)
             {
-                var user = await _userRepo.GetByIdAsync(userId);
+                var user = await _userRepo.GetUserAsync(ApplicationUserSpecification.ById(userId));
                 if (user != null)
                 {
-                    var wallet = new Wallet()
+                    if (!user.IsActive)
                     {
-                        Amount = 0,
-                        Created = DateTime.Now,
-                        CreatedBy = "Backend",
-                        IsActive = true,
-                        UserId = user.Id,
-                    };
-                    var walletEvent = new WalletEvent()
-                    {
-                        Created = DateTime.Now,
-                        CreatedBy = "Backend",
-                        EventType = WalletEvent.WalletCreate,
-                        IsActive = true,
-                        Description = $"New Wallet Has been created by admin for user {user.NormalizedUserName} on {DateTime.Now.ToString("d")}",
-                        UserId = user.Id,
-                    };
-                    wallet.WalletEvents.Add(walletEvent);
-                    user.IsActive = true;
-                    await _walletRepo.Create(wallet);
-                    var result = await _unitOfWork.SaveChanges();
-                    if (!result.IsSuccess)
-                    {
-                        foreach (var error in result.Errors)
+                        var wallet = new Wallet()
                         {
-                            response.Errors.Add(error);
+                            Amount = 0,
+                            Created = DateTime.Now,
+                            CreatedBy = "Backend",
+                            IsActive = true,
+                            UserId = user.Id,
+                        };
+                        var walletEvent = new WalletEvent()
+                        {
+                            Created = DateTime.Now,
+                            CreatedBy = "Backend",
+                            EventType = WalletEvent.WalletCreate,
+                            IsActive = true,
+                            Description = $"New Wallet Has been created by admin for user {user.NormalizedUserName} on {DateTime.Now.ToString("d")}",
+                            UserId = user.Id,
+                        };
+                        wallet.WalletEvents.Add(walletEvent);
+                        user.IsActive = true;
+                        await _walletRepo.Create(wallet);
+                        var result = await _unitOfWork.SaveChangesAsync();
+                        if (!result.IsSuccess)
+                        {
+                            foreach (var error in result.Errors)
+                            {
+                                response.Errors.Add(error);
+                            }
                         }
                     }
+                    else
+                    {
+                        response.Errors.Add("User is already active!");
+                    }
+
                 }
                 else
                 {
@@ -83,9 +92,10 @@ namespace API.Services.Services
             var response = new ResponseObject<UserDto>();
             if (userId != null)
             {
-                var user = await _userRepo.GetByIdAsync(userId);
+                var user = await _userRepo.GetUserAsync(ApplicationUserSpecification.ById(userId));
                 if (user != null)
                 {
+                    var wallet = await _walletRepo.GetWalletAsync(WalletSpecification.ByUserId(userId));
                     var userDto = new UserDto()
                     {
                         Id = user.Id,
@@ -97,7 +107,8 @@ namespace API.Services.Services
                         Name = user.NormalizedUserName,
                         Phone = user.PhoneNumber,
                         State = user.State,
-                        Username = user.UserName
+                        Username = user.UserName,
+                        WalletId = wallet != null ? wallet.Id : ""
                     };
                     response.RequestedObject = userDto;
                 }
@@ -117,7 +128,7 @@ namespace API.Services.Services
         {
             var response = new ResponseObject<List<UserDto>>();
 
-            var users = await _userRepo.GetAllAsync();
+            var users = await _userRepo.ListUsersAsync(ApplicationUserSpecification.All());
             if (users.Any())
             {
                 var listUsers = users.Select(c => new UserDto()
