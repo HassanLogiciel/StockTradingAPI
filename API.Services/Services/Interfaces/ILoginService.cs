@@ -1,4 +1,5 @@
 ﻿using API.Common;
+using API.Services.Services.Dtos;
 using Service.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,6 @@ namespace API.Services.Services.Interfaces
 {
     public interface ILoginService
     {
-        public Task<Response> LoginUser(LoginVm model);
+        public Task<ResponseObject<LoginDto>> LoginUser(LoginVm model);
     }
 }

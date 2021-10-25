@@ -10,8 +10,9 @@ namespace API.Services.ViewModels
         [Required]
         public string UserId { get; set; }
         [Required]
-        public int WalletId { get; set; }
+        public string WalletId { get; set; }
         [Required]
-        public double Amount { get; set; }
+        [RegularExpression(@"^[0-9]*(\.[0-9]{1,2})?$", ErrorMessage = "Please Enter the valid amount.")]
+        public float Amount { get; set; }
     }
 }

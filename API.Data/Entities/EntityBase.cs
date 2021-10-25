@@ -10,9 +10,13 @@ namespace API.Services.Services.Model
 {
     public class EntityBase : IEnityBase
     {
+        public EntityBase()
+        {
+            Created = DateTime.Now;
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public DateTime Created { get; set; } = DateTime.Now;
         public string CreatedBy { get; set; }
         public DateTime? Modified { get; set; }

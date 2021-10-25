@@ -60,12 +60,17 @@ namespace Admin
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("scope", "UserApi");
                 });
+                option.AddPolicy("TransactionAdminApi", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "TransactionAdminApi");
+                });
                 option.AddPolicy("Admin", policy =>
                 {
                     policy.RequireClaim("RoleType", "Admin");
                 });
             });
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo() 
@@ -74,7 +79,7 @@ namespace Admin
                     Version = "V1"
                 });
             });
-            services.ResolveStockTraderDependencies();
+            services.ResolveAdminDependencies();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -98,7 +103,7 @@ namespace Admin
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapControllers().RequireAuthorization("UserApi");
+                //endpoints.MapControllers().RequireAuthorization("ApiScope");
                 //endpoints.MapControllerRoute(name: "userController", pattern: "{controller=User}").RequireAuthorization("UserApi");
 
             });

@@ -28,9 +28,9 @@ namespace API.Services.Services
             _signInManager = signInManager;
         }
 
-        public async Task<Response> LoginUser(LoginVm model)
+        public async Task<ResponseObject<LoginDto>> LoginUser(LoginVm model)
         {
-            var response = new Response();
+            var response = new ResponseObject<LoginDto>();
             try
             {
                 if (model != null)
@@ -56,8 +56,8 @@ namespace API.Services.Services
                                 configurationBuilder.AddJsonFile(path, false);
                                 IConfigurationRoot root = configurationBuilder.Build();
                                 IConfigurationSection configurationServerUrl = root.GetSection("IdentityServerUrl");
-                                 IConfigurationSection configurationNormalUserScopes = root.GetSection("NormalUserScopes");
-                                 IConfigurationSection configurationAdminScopes = root.GetSection("AdminScopes");
+                                IConfigurationSection configurationNormalUserScopes = root.GetSection("NormalUserScopes");
+                                IConfigurationSection configurationAdminScopes = root.GetSection("AdminScopes");
 
                                 var identityServerUrl = configurationServerUrl.Value;
                                 var clientId = model.ClientId;
@@ -115,7 +115,7 @@ namespace API.Services.Services
                                                         Expiration = tokenResponse.ExpiresIn,
                                                         UserId = applicationUser.Id
                                                     };
-                                                    response.AdditionalData = JsonConvert.SerializeObject(loginDto);
+                                                    response.RequestedObject = loginDto;
                                                 }
                                             }
                                         }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20211020134039_Initial")]
+    [Migration("20211021115918_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,9 +23,9 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Data.Entities.AppSetting", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -33,11 +33,17 @@ namespace API.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("CurrencyId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CurrencyId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<float>("MaxDeposit")
+                        .HasColumnType("real");
+
+                    b.Property<float>("MaxWithDraw")
+                        .HasColumnType("real");
 
                     b.Property<DateTime?>("Modified")
                         .HasColumnType("datetime2");
@@ -54,9 +60,9 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Data.Entities.Currency", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
@@ -84,43 +90,11 @@ namespace API.Data.Migrations
                     b.ToTable("Currencies");
                 });
 
-            modelBuilder.Entity("API.Data.Entities.StatusDb", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("Modified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Statuses");
-                });
-
             modelBuilder.Entity("API.Data.Entities.Stock", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Company")
                         .HasColumnType("int");
@@ -153,9 +127,12 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Data.Entities.Transaction", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -175,41 +152,33 @@ namespace API.Data.Migrations
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StatusId")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("StatusId1")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WalletId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("WalletId1")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("WalletId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StatusId1");
-
-                    b.HasIndex("WalletId1");
+                    b.HasIndex("WalletId");
 
                     b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Wallet", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -236,9 +205,9 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Data.Entities.WalletEvent", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -264,8 +233,8 @@ namespace API.Data.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("WalletId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("WalletId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -283,13 +252,9 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Data.Entities.Transaction", b =>
                 {
-                    b.HasOne("API.Data.Entities.StatusDb", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId1");
-
                     b.HasOne("API.Data.Entities.Wallet", "Wallet")
-                        .WithMany()
-                        .HasForeignKey("WalletId1");
+                        .WithMany("Transactions")
+                        .HasForeignKey("WalletId");
                 });
 
             modelBuilder.Entity("API.Data.Entities.WalletEvent", b =>

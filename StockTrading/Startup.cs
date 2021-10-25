@@ -47,18 +47,29 @@ namespace StockTrading
                 });
             services.AddAuthorization(option =>
             {
-                option.AddPolicy("ApiScope", policy =>
+                option.AddPolicy("TransactionApi", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("scope", "");
+                    policy.RequireClaim("scope", "TransactionApi");
                 });
-                option.AddPolicy("Admin", policy =>
+                option.AddPolicy("NUserApi", policy =>
                 {
-                    policy.RequireClaim("RoleType", "");
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "NUserApi");
+                });
+                option.AddPolicy("NWalletApi", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "NWalletApi");
+                });
+                option.AddPolicy("NormalUser", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("RoleType", "NormalUser");
                 });
             });
-            services.AddControllers();
-            services.ResolveAdminDependencies();
+            services.AddControllers().AddNewtonsoftJson();
+            services.ResolveStockTraderDependencies();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +84,7 @@ namespace StockTrading
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -32,4 +32,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.20" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\API.Common\API.Common.csproj" />
+  </ItemGroup>
+
 </Project>
